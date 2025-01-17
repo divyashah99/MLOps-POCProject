@@ -1,0 +1,6 @@
+gcloud:
+  project_id: "mlops-poc-448018"
+  bucket_name: "mlops-poc-project-bucket"
+dataset:
+  name: "imdb"
+  split: "train[:100]"

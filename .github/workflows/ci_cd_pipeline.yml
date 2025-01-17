@@ -1,0 +1,39 @@
+name: MLOps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9.13'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Set GCP Credentials
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/gcp-key.json
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      run: |
+        echo "${{ secrets.GCP_KEY_JSON }}" > $GOOGLE_APPLICATION_CREDENTIALS
+        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+        gcloud config set project $GCP_PROJECT_ID
+
+    - name: Run Data Pipeline
+      run: |
+        python scripts/setup_gcloud.py
+        python scripts/download_data.py
+        python scripts/upload_to_bucket.py

@@ -1,0 +1,22 @@
+# For downloading datasets
+datasets==2.16.1
+
+# Transformers and tokenization for the model
+transformers==4.33.0
+tokenizers==0.13.3
+
+# PyTorch for model training and preprocessing
+torch==2.0.1
+torchvision==0.15.2
+
+# For image preprocessing
+Pillow==9.5.0
+
+# Google Cloud SDK for GCS interactions
+google-cloud-storage==2.12.0
+
+# YAML configuration support
+PyYAML==6.0
+
+# For CI/CD pipelines (optional but useful for local testing)
+pytest==7.4.0
