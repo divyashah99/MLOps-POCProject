@@ -47,7 +47,7 @@ jobs:
 
     - name: Create GCR Repository (if not exists)
       run: |
-        if [[ $(gcloud container repositories list | grep "${{ secrets.GCP_PROJECT_ID }}/mlops-training") == "" ]]; then
+        if [[ $(gcloud artifacts container repositories list | grep "${{ secrets.GCP_PROJECT_ID }}/mlops-training") == "" ]]; then
           gcloud container repositories create "${{ secrets.GCP_PROJECT_ID }}/mlops-training"
         fi
 
