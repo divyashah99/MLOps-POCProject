@@ -72,7 +72,7 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/mlops-training:latest .
+        docker build -f docker/Dockerfile -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/mlops-training:latest .
         docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mlops-training:latest
 
     - name: Submit Training Job
