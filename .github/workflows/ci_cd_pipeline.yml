@@ -47,9 +47,10 @@ jobs:
 
     - name: Create GCR Repository (if not exists)
       run: |
-        if [[ $(gcloud artifacts container repositories list | grep "${{ secrets.GCP_PROJECT_ID }}/mlops-training") == "" ]]; then
-          gcloud container repositories create "${{ secrets.GCP_PROJECT_ID }}/mlops-training"
+        if [[ $(gcloud artifacts repositories list --location=us-central1 | grep "mlops-training") == "" ]]; then
+          gcloud artifacts repositories create mlops-training --repository-format=docker --location=us-central1
         fi
+
 
     - name: Build and Push Docker Image
       run: |
