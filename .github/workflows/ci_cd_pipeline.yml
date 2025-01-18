@@ -45,6 +45,19 @@ jobs:
     - name: Set GCP Project ID
       run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
+    - name: Create GCR Repository (if not exists)
+      run: |
+        gcloud auth activate-service-account --key-file=${{ secrets.GCP_KEY_JSON }} 
+        if [[ $(gcloud container repositories list | grep "${{ secrets.GCP_PROJECT_ID }}/mlops-training") == "" ]]; then
+          gcloud container repositories create "${{ secrets.GCP_PROJECT_ID }}/mlops-training"
+        fi
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -f docker/Dockerfile -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/mlops-training:latest .
+        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mlops-training:latest
+
+
     - name: Run Data Pipeline
       run: |
         python scripts/setup_gcloud.py
@@ -63,13 +76,10 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_KEY_JSON }}'
 
-      - name: Build and Push Docker Image
-        run: |
-          docker build -f docker/Dockerfile -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/mlops-training:latest .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/mlops-training:latest
 
       - name: Submit Training Job
         run: |
+          gcloud auth activate-service-account --key-file=${{ secrets.GCP_KEY_JSON }}
           gcloud ai custom-jobs create \
             --region=us-central1 \
             --display-name=mlops-training-job \
